@@ -1,6 +1,7 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
@@ -154,7 +155,7 @@ public class PlayerLocator extends ZyinHUDModBase
         		overlayMessage = GetOverlayMessageForOtherPlayer((EntityOtherPlayerMP)entity, distanceFromMe);
         		
         		//format the string to be the same color as that persons team color
-        		ScorePlayerTeam team = (ScorePlayerTeam)((EntityOtherPlayerMP)entity).getTeam();
+        		ScorePlayerTeam team = (ScorePlayerTeam)((EntityPlayerSP)entity).getTeam();
         		if(team != null)
         			overlayMessage = team.formatString(overlayMessage);
         	}

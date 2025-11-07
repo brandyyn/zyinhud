@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAnvil;
-import net.minecraft.block.BlockBarrier;
 import net.minecraft.block.BlockBasePressurePlate;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockCactus;
@@ -659,15 +658,23 @@ public class SafeOverlay extends ZyinHUDModBase
 
             if (block == null
             	|| block == Blocks.air
-            	|| block instanceof BlockBarrier
             	|| block instanceof BlockSlime)
             {
                 return false;
             }
-            
-            if (block.isOpaqueCube()
-            	|| mc.theWorld.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz))
-            	|| block instanceof BlockFarmland)	//the one exception to the isOpaqueCube and doesBlockHaveSolidTopSurface rules
+
+            if (block != Blocks.air && block.isOpaqueCube())
+            {
+                return true;
+            }
+
+            if (mc.theWorld.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz)))
+            {
+                return true;
+            }
+
+            //the one exception to the isOpaqueCube and doesBlockHaveSolidTopSurface rules
+            if (block instanceof BlockFarmland)
             {
                 return true;
             }
@@ -701,7 +708,6 @@ public class SafeOverlay extends ZyinHUDModBase
             //  (I wonder if the list shorter for blocks that mobs CAN spawn in?
             //   lever, button, redstone  torches, reeds, rail, plants, crops, etc.)
             return !(block instanceof BlockAnvil
-                    || block instanceof BlockBarrier
                     || block instanceof BlockBed
                     || block instanceof BlockCactus
                     || block instanceof BlockCake
@@ -723,8 +729,8 @@ public class SafeOverlay extends ZyinHUDModBase
                     || (block instanceof BlockSnow && block.getMetaFromState(ZyinHUDUtil.GetBlockState(x+dx, y+dy, z+dz)) > 0)	//has 1 out of 8 snow layers
                     || block instanceof BlockStainedGlass
                     || block instanceof BlockStairs
-                    || block instanceof BlockWall
-                    || block instanceof BlockWeb);
+                    || block instanceof BlockWeb
+                    || block instanceof BlockWall);
         }
         
         /**
