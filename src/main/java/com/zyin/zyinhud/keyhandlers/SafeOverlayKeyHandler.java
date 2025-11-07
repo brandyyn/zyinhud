@@ -39,6 +39,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
             	ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             }
 
+            SafeOverlay.instance.RecalculateUnsafePositions();
             return;
         }
 
@@ -48,6 +49,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
             int drawDistance = SafeOverlay.instance.DecreaseDrawDistance();
             ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             
+            SafeOverlay.instance.RecalculateUnsafePositions();
             return;
         }
 
@@ -58,6 +60,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
             SafeOverlay.instance.SetSeeUnsafePositionsThroughWalls(false);
             ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
             
+            SafeOverlay.instance.RecalculateUnsafePositions();
         	ZyinHUDSound.PlayButtonPress();
             return;
         }
@@ -77,6 +80,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
             	ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.seethroughwallsdisabled"));
             }
 
+            SafeOverlay.instance.RecalculateUnsafePositions();
         	ZyinHUDSound.PlayButtonPress();
             return;
         }
@@ -85,6 +89,12 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         
         SafeOverlay.Modes.ToggleMode();
     	ZyinHUDSound.PlayButtonPress();
+
+        if (SafeOverlay.Mode == Modes.ON)
+        {
+            //if we enable the mod, recalculate unsafe areas immediately
+            SafeOverlay.instance.RecalculateUnsafePositions();
+        }
 	}
 	
 }
