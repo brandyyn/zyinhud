@@ -1,7 +1,6 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
 
@@ -92,7 +90,7 @@ public class ItemSelector extends ZyinHUDModBase
 	 */
 	public static boolean UseMouseSideButtons;
 
-	protected static final ResourceLocation widgetTexture = new ResourceLocation("textures/gui/widgets.png");
+	private static final ResourceLocation widgetTexture = new ResourceLocation("textures/gui/widgets.png");
 
 	public static final int WHEEL_UP = -1;
 	public static final int WHEEL_DOWN = 1;
@@ -103,15 +101,14 @@ public class ItemSelector extends ZyinHUDModBase
 	public static final int maxTimeout = 500;
 
 	private static int[] slotMemory = new int[InventoryPlayer.getHotbarSize()];
+	private static int ticksToShow = 0;
 
-	protected static boolean isCurrentlySelecting = false;
-	protected static boolean isCurrentlyRendering = false;
-	protected static int ticksToShow = 0;
-	protected static int scrollAmount = 0;
+	private static boolean isCurrentlySelecting = false;
+	private static int scrollAmount = 0;
 	private static int previousDir = 0;
 	private static int targetInvSlot = -1;
 	private static int currentHotbarSlot = 0;
-	protected static ItemStack[] currentInventory = null;
+	private static ItemStack[] currentInventory = null;
 
 	/**
 	 * Scrolls the selector towards the specified direction. This will cause the item selector overlay to show.
@@ -121,8 +118,11 @@ public class ItemSelector extends ZyinHUDModBase
 	public static void Scroll(int direction)
 	{
 		// Bind to current player state
-		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory.clone();
+		if (currentInventory == null)
+		{
+			currentHotbarSlot = mc.thePlayer.inventory.currentItem;
+			currentInventory = mc.thePlayer.inventory.mainInventory.clone();
+		}
 
 		if (!AdjustSlot(direction))
 		{
@@ -212,16 +212,9 @@ public class ItemSelector extends ZyinHUDModBase
 			return true;
 	}
 
-	public static void OnHotkeyPressed()
-	{
-		if (!ItemSelector.Enabled)
-			return;
-
-		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory.clone();
-		isCurrentlyRendering = true;
-	}
-	
+	/**
+	 * Checks if selection is ongoing and the modifier key gets de-pressed.
+	 */
 	public static void OnHotkeyReleased()
 	{
 		if (!ItemSelector.Enabled)
@@ -229,8 +222,6 @@ public class ItemSelector extends ZyinHUDModBase
 
 		if (isCurrentlySelecting)
 			SelectItem();
-		else
-			Done();
 	}
 
 	/**
@@ -239,15 +230,8 @@ public class ItemSelector extends ZyinHUDModBase
 	 */
 	public static void RenderOntoHUD(float partialTicks)
 	{
-		if(!ItemSelector.Enabled || !isCurrentlyRendering)
+		if (!isCurrentlySelecting)
 			return;
-		
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
-		{
-			//stop the item selecting if another modifier key is pressed so we don't get stuck in the selecting state
-			Done();
-			return;
-		}
 
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int screenWidth = scaledresolution.getScaledWidth();
@@ -257,19 +241,15 @@ public class ItemSelector extends ZyinHUDModBase
 		int originX = (screenWidth / 2) - (invWidth / 2);
 		int originZ = screenHeight - invHeight - 48;
 
-		if(targetInvSlot > -1)
-		{
-			String labelText = currentInventory[targetInvSlot].getDisplayName();
-			//String labelText = currentInventory[targetInvSlot].getChatComponent().getFormattedText();
-			int labelWidth = mc.fontRendererObj.getStringWidth(labelText);
-			mc.fontRendererObj.drawStringWithShadow(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFFFFF);
-		}
-		
+		String labelText = currentInventory[targetInvSlot].getDisplayName();
+		int labelWidth = mc.fontRendererObj.getStringWidth(labelText);
+		mc.fontRendererObj.drawStringWithShadow(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFAA00);
+
 		GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
 		GL11.glEnable(GL11.GL_DEPTH_TEST); // so the enchanted item effect is rendered properly
 		
 		RenderHelper.enableGUIStandardItemLighting();
-        GlStateManager.disableLighting();	//prevents the first block in inventory from having no shadows
+		//OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
 		int idx = 0;
 		for (int z = 0; z < 3; z++) // 3 rows of the inventory
@@ -282,16 +262,17 @@ public class ItemSelector extends ZyinHUDModBase
 					idx++;
 					continue;
 				}
-				
+
+				OpenGlHelper.glBlendFunc(770, 771, 1, 0); // so the selection graphic renders properly
+
 				// Draws the selection
 				if (idx + 9 == targetInvSlot)
 				{
-					OpenGlHelper.glBlendFunc(770, 771, 1, 0); // so the selection graphic renders properly
 					GL11.glEnable(GL11.GL_BLEND);
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 					ZyinHUDRenderer.RenderCustomTexture(originX + (x * 20) - 1, originZ + (z * 22) - 1, 0, 22, 24, 24, widgetTexture, 1f);
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-					//GL11.glDisable(GL11.GL_BLEND);	//causes enchanted items to render incorrectly
+					GL11.glDisable(GL11.GL_BLEND);
 				}
 
 				ItemStack itemStack = currentInventory[idx + 9];
@@ -322,22 +303,16 @@ public class ItemSelector extends ZyinHUDModBase
 				idx++;
 			}
 		}
-		
+
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
-		GlStateManager.disableLighting();	// the itemRenderer.renderItem method enables lighting
-		
-		if(isCurrentlySelecting)
-		{
-			ticksToShow--;
-			if (ticksToShow <= 0)
-				Done();
-		}
+		GL11.glDisable(GL11.GL_LIGHTING); // the itemRenderer.renderItem() method enables lighting
+
+		ticksToShow--;
+		if (ticksToShow <= 0)
+			Done();
 	}
-	
-	/**
-	 * Moves the selected item onto the hotbar.
-	 */
+
 	private static void SelectItem()
 	{
 		ItemStack currentStack = mc.thePlayer.inventory.mainInventory[currentHotbarSlot];
@@ -366,6 +341,7 @@ public class ItemSelector extends ZyinHUDModBase
 				Done();
 				return;
 			}
+			
 			InventoryUtil.Swap(currentInvSlot, targetInvSlot);
 		}
 		else
@@ -373,10 +349,7 @@ public class ItemSelector extends ZyinHUDModBase
 
 		Done();
 	}
-	
-	/**
-	 * Cleans up after we're done rendering or selecting an item
-	 */
+
 	private static void Done()
 	{
 		targetInvSlot = -1;
@@ -385,9 +358,10 @@ public class ItemSelector extends ZyinHUDModBase
 		currentInventory = null;
 
 		ticksToShow = 0;
-		isCurrentlyRendering = false;
 		isCurrentlySelecting = false;
 	}
+	
+
 
 	public static int GetTimeout()
 	{

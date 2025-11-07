@@ -70,26 +70,24 @@ public class TorchAid extends ZyinHUDModBase
     }
     
     /**
-     * Makes the player place a Torch if they are currently using a tool.
+     * Makes the player place a Torch if they are currently using an axe, pickaxe, shovel, or have nothing in hand.
      */
     public void EquipTorchIfToolIsEquipped()
     {
     	if(mc.currentScreen == null && mc.inGameHasFocus)
     	{
     		ItemStack currentItemStack = mc.thePlayer.getHeldItem();
-    		if(currentItemStack != null)
+    		if(currentItemStack == null
+    			|| currentItemStack.getItem() instanceof ItemTool
+    			|| ModCompatibility.TConstruct.IsTConstructToolWithoutARightClickAction(currentItemStack.getItem()))
     		{
-    			if(currentItemStack.getItem() instanceof ItemTool
-    				|| ModCompatibility.TConstruct.IsTConstructToolWithoutARightClickAction(currentItemStack.getItem()))
-	    		{
-	    			UseTorch();
-	    		}
+    			UseTorch();
     		}
     	}
     }
     
     /**
-     * Makes the player place a Torch if they have one by selecting a Torch in their inventory then right clicking.
+     * Makes the player place a Torch if they have any by selecting a Torch in their inventory then right clicking.
      */
     public void UseTorch()
     {
