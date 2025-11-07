@@ -58,17 +58,7 @@ public class HealthMonitor extends ZyinHUDModBase
          */
         public static Modes ToggleMode()
         {
-        	return ToggleMode(true);
-        }
-        /**
-         * Sets the next availble mode for this mod if forward=true, or previous mode if false
-         */
-        public static Modes ToggleMode(boolean forward)
-        {
-        	if (forward)
-        		return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
-        	else
-        		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
         
         /**
@@ -91,13 +81,12 @@ public class HealthMonitor extends ZyinHUDModBase
 	private static Timer timer = new Timer();
 	
 	private static int LowHealthSoundThreshold;
-	private static float Volume;
 	public static boolean PlayFasterNearDeath;
 	
 	private static boolean isPlayingLowHealthSound = false;
 	private static int repeatDelay = 1000;
 	
-	public static final HealthMonitor instance = new HealthMonitor();
+	public static HealthMonitor instance = new HealthMonitor();
 	
 	public HealthMonitor()
 	{
@@ -128,7 +117,7 @@ public class HealthMonitor extends ZyinHUDModBase
 	 */
 	protected static void PlayLowHealthSoundIfHurt()
 	{
-		if(HealthMonitor.Enabled && mc.thePlayer != null)
+		if(mc.thePlayer != null)
 		{
 			int playerHealth = (int)mc.thePlayer.getHealth();
 			if(playerHealth < LowHealthSoundThreshold && playerHealth > 0)
@@ -170,7 +159,7 @@ public class HealthMonitor extends ZyinHUDModBase
 	 */
 	public static void PlayLowHealthSound()
 	{
-		ZyinHUDSound.PlaySound(GetSoundNameFromMode(), Volume);
+		ZyinHUDSound.PlaySound(GetSoundNameFromMode());
 	}
 	
 	private static class PlayLowHealthSoundTimerTask extends TimerTask
@@ -194,15 +183,6 @@ public class HealthMonitor extends ZyinHUDModBase
 	public static int GetLowHealthSoundThreshold()
 	{
 		return LowHealthSoundThreshold;
-	}
-	
-	public static void SetVolume(float volume)
-	{
-		Volume = MathHelper.clamp_float(volume, 0, 1);
-	}
-	public static float GetVolume()
-	{
-		return Volume;
 	}
 	
 
