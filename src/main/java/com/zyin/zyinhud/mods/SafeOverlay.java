@@ -28,23 +28,24 @@ import net.minecraft.block.BlockPistonExtension;
 import net.minecraft.block.BlockPistonMoving;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockSlime;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
+//import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
-//import net.minecraftforge.event.ForgeSubscribe;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * The Safe Overlay renders an overlay onto the game world showing which areas
@@ -191,7 +192,6 @@ public class SafeOverlay extends ZyinHUDModBase
      * This event only fires on single player worlds!
      * @param event
      */
-    /*
     @SubscribeEvent
     public void PlayerInteractEvent(PlayerInteractEvent event)
     {
@@ -226,7 +226,7 @@ public class SafeOverlay extends ZyinHUDModBase
         {
             OnBlockPlaced(blockPlaced, x, y , z);
         }
-    }*/
+    }
 
     /**
      * ONLY WORKS IN SINGLE PLAYER<p>
@@ -238,14 +238,13 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param y
      * @param z
      */
-    /*
     public void OnBlockPlaced(Block block, int x, int y, int z)
     {
         if (block.getLightValue() > 0)
         {
             OnLightEmittingBlockPlaced(block, x, y, z);
         }
-    }*/
+    }
 
     /**
      * ONLY WORKS IN SINGLE PLAYER<p>
@@ -257,11 +256,10 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param y
      * @param z
      */
-    /*
     public void OnLightEmittingBlockPlaced(Block block, int x, int y, int z)
     {
         RecalculateUnsafePositions();
-    }*/
+    }
 
     /**
      * This thead will calculate unsafe positions around the player given a Y coordinate.
@@ -310,7 +308,6 @@ public class SafeOverlay extends ZyinHUDModBase
             }
         }
     }
-    
     
     /**
      * Determines if any mob can spawn at a position. Works very well at detecting
@@ -493,10 +490,9 @@ public class SafeOverlay extends ZyinHUDModBase
             else if (blockAbove instanceof BlockSnow)
             {
             	//mobs only spawn on snow blocks that are stacked 1 high (when metadata = 0)
+            	
             	//Minecraft bug: the Y-bounds for stacked snow blocks is bugged and changes based on the last one you looked at
-            	
-                int snowMetadata = blockAbove.getMetaFromState(ZyinHUDUtil.GetBlockState(position.x, position.y+1, position.z));
-            	
+                int snowMetadata = mc.theWorld.getBlockMetadata(position.x, position.y+1, position.z);
                 if(snowMetadata == 0)
                 	boundingBoxMaxY = 1 + 0.125;
                 else
@@ -577,15 +573,15 @@ public class SafeOverlay extends ZyinHUDModBase
     {
         if (Mode == Modes.OFF)
         {
-        	return "";
+            return FontCodes.WHITE + "";
         }
         else if (Mode == Modes.ON)
         {
-            return EnumChatFormatting.WHITE + Localization.get("safeoverlay.infoline");
+            return FontCodes.WHITE + Localization.get("safeoverlay.infoline");
         }
         else
         {
-            return EnumChatFormatting.WHITE + "???";
+            return FontCodes.WHITE + "???";
         }
     }
 
@@ -772,7 +768,7 @@ public class SafeOverlay extends ZyinHUDModBase
          */
         public Block GetBlock(int dx, int dy, int dz)
         {
-        	return ZyinHUDUtil.GetBlock(x + dx, y + dy, z + dz);
+            return mc.theWorld.getBlock(x + dx, y + dy, z + dz);
         }
 
         /**
@@ -786,9 +782,7 @@ public class SafeOverlay extends ZyinHUDModBase
         {
             Block block = GetBlock(dx, dy, dz);
 
-            if (block == null
-            	|| block == Blocks.air
-            	|| block instanceof BlockSlime)
+            if (block == null || block == Blocks.air)
             {
                 return false;
             }
@@ -798,7 +792,7 @@ public class SafeOverlay extends ZyinHUDModBase
                 return true;
             }
 
-            if (mc.theWorld.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz)))
+            if (mc.theWorld.doesBlockHaveSolidTopSurface(mc.theWorld, x + dx, y + dy, z + dz))
             {
                 return true;
             }
@@ -855,8 +849,7 @@ public class SafeOverlay extends ZyinHUDModBase
                     || block instanceof BlockPistonExtension
                     || block instanceof BlockPistonMoving
                     || block instanceof BlockSlab
-                    || block instanceof BlockSlime
-                    || (block instanceof BlockSnow && block.getMetaFromState(ZyinHUDUtil.GetBlockState(x+dx, y+dy, z+dz)) > 0)	//has 1 out of 8 snow layers
+                    || (block instanceof BlockSnow && mc.theWorld.getBlockMetadata(dx, dy, dz) != 0)	// 1/8 snow layers
                     || block instanceof BlockStainedGlass
                     || block instanceof BlockStairs
                     || block instanceof BlockWeb
@@ -907,7 +900,7 @@ public class SafeOverlay extends ZyinHUDModBase
          */
         public int GetLightLevelWithoutSky()
         {
-            return mc.theWorld.getLightFor(EnumSkyBlock.BLOCK, new BlockPos(x, y + 1, z));
+            return mc.theWorld.getSavedLightValue(EnumSkyBlock.Block, x, y + 1, z);
         }
 
         /**
@@ -916,7 +909,7 @@ public class SafeOverlay extends ZyinHUDModBase
          */
         public int GetLightLevelWithSky()
         {
-            return mc.theWorld.getLightFor(EnumSkyBlock.SKY, new BlockPos(x, y + 1, z));
+            return mc.theWorld.getSavedLightValue(EnumSkyBlock.Sky, x, y + 1, z);
         }
 
         @Override

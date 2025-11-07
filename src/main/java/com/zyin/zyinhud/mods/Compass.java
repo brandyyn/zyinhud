@@ -1,7 +1,13 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.util.EnumChatFormatting;
+import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+
+import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
@@ -77,11 +83,11 @@ public class Compass extends ZyinHUDModBase
             	int x_padding;
 
         		//the font spacing is different if we are rendering in Unicode
-            	if(mc.fontRendererObj.getUnicodeFlag())
+            	if(mc.fontRenderer.getUnicodeFlag())
             	{
             		brackets = "[  ]";
-                	x = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
-                	x_padding = mc.fontRendererObj.getStringWidth(brackets)/2 - 4;
+                	x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+                	x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 4;
                 	if(facing % 2 == 0)	//s,w,n,e
                 		x_padding += 2;
             		
@@ -89,20 +95,20 @@ public class Compass extends ZyinHUDModBase
             	else
             	{
             		brackets = "[   ]";
-                	x = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
-                	x_padding = mc.fontRendererObj.getStringWidth(brackets)/2 - 6;
+                	x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+                	x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 6;
                 	if(facing % 2 == 0)	//s,w,n,e
                 		x_padding += 3;
             	}
             	
             	
-            	mc.fontRendererObj.func_175063_a(EnumChatFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
+            	mc.fontRenderer.drawStringWithShadow(FontCodes.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
             	
-            	return EnumChatFormatting.GRAY + brackets;
+            	return FontCodes.GRAY + brackets;
             }
             else
             {
-                return EnumChatFormatting.GRAY + "[" + EnumChatFormatting.RED + compassDirection + EnumChatFormatting.GRAY + "]";
+                return FontCodes.GRAY + "[" + FontCodes.RED + compassDirection + FontCodes.GRAY + "]";
             }
         }
 

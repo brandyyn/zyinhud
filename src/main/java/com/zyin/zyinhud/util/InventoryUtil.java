@@ -15,7 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -95,7 +94,7 @@ public class InventoryUtil
 	 * <p>
 	 * If it is in your hotbar, it will change the selected hotbar index in order to use it.
 	 * <br>If it is in your inventory, it will swap the item into your hotbar in order to use it.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return true if the item was used.
 	 */
 	public static boolean UseItem(Object object)
@@ -116,7 +115,7 @@ public class InventoryUtil
 	
 	/**
 	 * Uses an item in the players hotbar by changing the selected index, using it, then changing it back.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return true if the item was used.
 	 */
 	public static boolean UseItemInHotbar(Object object)
@@ -129,7 +128,7 @@ public class InventoryUtil
 
 	/**
 	 * Uses an item in the players hotbar by changing the selected index, using it, then changing it back.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @param itemSlotIndex 36-44
 	 * @return true if the item was used.
 	 */
@@ -162,7 +161,7 @@ public class InventoryUtil
 	
 	/**
 	 * Uses an item in the players inventory by quickly Swap()ing it into the hotbar, using it, then Swap()ing it back.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return true if the item was used.
 	 */
 	public static boolean UseItemInInventory(Object object)
@@ -175,7 +174,7 @@ public class InventoryUtil
 	
 	/**
 	 * Uses an item in the players inventory by quickly Swap()ing it into the hotbar, using it, then Swap()ing it back.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @param itemSlotIndex 0-35
 	 * @return true if the item was used.
 	 */
@@ -217,9 +216,7 @@ public class InventoryUtil
 	public static boolean SendUseItem()
 	{
 		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
-		boolean sendUseItem = mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
-		System.out.println("sendUseItem:"+sendUseItem);
-		return sendUseItem;
+		return mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
 	}
 	
 	/**
@@ -229,18 +226,9 @@ public class InventoryUtil
 	public static boolean SendUseBlock()
 	{
 		//Blocks need to use the onPlayerRightClick() function to work properly
-		//return mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
-		
-		boolean sendUseBlock = mc.playerController.func_178890_a(mc.thePlayer, 
-				mc.theWorld, 
-				mc.thePlayer.getHeldItem(), 
-				new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord), 
-				mc.objectMouseOver.field_178784_b, //EnumFacing
-				mc.objectMouseOver.hitVec);
-		BlockPos pos = new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord);
-		System.out.println("sendUseBlock:"+sendUseBlock+" ("+pos+") "+mc.theWorld.getBlockState(pos).getBlock().getUnlocalizedName());
-		return sendUseBlock;
+		return mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
 	}
+
 	
 	/**
 	 * Swaps 2 items in your inventory after a specified amount of time has passed.
@@ -626,7 +614,8 @@ public class InventoryUtil
 	    int numMerchantSlots = numDisplayedSlots - numInventorySlots;
 	    
 	    GuiMerchant guiMerchant = ((GuiMerchant)mc.currentScreen);
-	    MerchantRecipeList merchantRecipeList = guiMerchant.getMerchant().getRecipes(mc.thePlayer);
+	    //MerchantRecipeList merchantRecipeList = guiMerchant.getIMerchant().getRecipes(mc.thePlayer);
+	    MerchantRecipeList merchantRecipeList = guiMerchant.func_147035_g().getRecipes(mc.thePlayer);
 	    
         if (merchantRecipeList == null || merchantRecipeList.isEmpty())
         	return false;
@@ -980,7 +969,7 @@ public class InventoryUtil
 	
 	/**
 	 * Gets the index of an item class in your inventory.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return 5-44, -1 if not found
 	 */
 	public static int GetItemIndexFromInventory(Object object)
@@ -1008,7 +997,7 @@ public class InventoryUtil
 	
 	/**
 	 * Gets the index of an item class in your hotbar.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return 36-44, -1 if not found
 	 */
 	public static int GetItemIndexFromHotbar(Object object)

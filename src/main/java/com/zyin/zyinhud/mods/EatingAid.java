@@ -14,7 +14,6 @@ import net.minecraft.item.ItemFishFood.FishType;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -149,7 +148,7 @@ public class EatingAid extends ZyinHUDModBase
             foodItemIndex = GetFoodItemIndexFromInventory();
         	if(foodItemIndex < 0)
             {
-        		ZyinHUDRenderer.DisplayNotification(Localization.get("eatingaid.nofood"));
+                ZyinHUDUtil.DisplayNotification(Localization.get("eatingaid.nofood"));
                 return;
             }
             
@@ -347,11 +346,11 @@ public class EatingAid extends ZyinHUDModBase
             if (item instanceof ItemFood)
             {
                 ItemFood food = (ItemFood)item;
-                float saturationModifier = food.getSaturationModifier(itemStack);
+                float saturation = food.func_150906_h(itemStack);
                 
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
-                	saturationModifier = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
+                	saturation = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
                 }
                 else if (item.equals(Items.golden_carrot)
                         || item.equals(Items.golden_apple))
@@ -361,14 +360,14 @@ public class EatingAid extends ZyinHUDModBase
                         continue;
                     }
 
-                    saturationModifier = 0.0001f;	//setting the saturation value low will make it unappealing to the food selection algorithm
+                    saturation = 0.0001f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
                 else if (item.equals(Items.rotten_flesh)
                          || item.equals(Items.poisonous_potato)
                          || item.equals(Items.spider_eye)
-                         || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
+                         || FishType.func_150978_a(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
                 {
-                	saturationModifier = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
+                	saturation = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
                 else if (item.equals(Items.chicken)
                         || item.equals(Items.porkchop)
@@ -380,13 +379,13 @@ public class EatingAid extends ZyinHUDModBase
                         continue;
                     }
 
-                    saturationModifier = 0.0003f;	//setting the saturation value low will make it unappealing to the food selection algorithm
+                    saturation = 0.0003f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
                 
-                if(saturationModifier > bestFoodMatchSaturation)
+                if(saturation > bestFoodMatchSaturation)
                 {
                 	bestFoodMatchIndex = i;
-                	bestFoodMatchSaturation = saturationModifier;
+                	bestFoodMatchSaturation = saturation;
                 	continue;
                 }
             }
@@ -409,7 +408,7 @@ public class EatingAid extends ZyinHUDModBase
         List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
         int bestFoodMatchIndex = -1;
         int bestFoodMatchOvereat = 999;
-        int bestFoodMatchHeal = -999;
+        int bestFoodMatchEat = -999;
         int foodLevel = mc.thePlayer.getFoodStats().getFoodLevel();	//max 20
         
         //iterate over the hotbar (36-44), then main inventory (9-35)
@@ -434,8 +433,8 @@ public class EatingAid extends ZyinHUDModBase
             {
                 ItemFood food = (ItemFood)item;
                 int foodNeeded = 20 - foodLevel;	//amount of hunger needed to be full
-                int heal = food.getHealAmount(itemStack);	//amount of hunger restored by eating this food
-                int overeat = foodNeeded - heal;
+                int eat = food.func_150905_g(itemStack);	//amount of hunger restored by eating this food
+                int overeat = foodNeeded - eat;
                 overeat = (overeat > 0) ? 0 : Math.abs(overeat);	//positive number, amount we would overeat by eating this food
 
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
@@ -455,7 +454,7 @@ public class EatingAid extends ZyinHUDModBase
                 else if (item.equals(Items.rotten_flesh)
                         || item.equals(Items.poisonous_potato)
                         || item.equals(Items.spider_eye)
-                        || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
+                        || FishType.func_150978_a(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
                 {
                     overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
                 }
@@ -474,11 +473,11 @@ public class EatingAid extends ZyinHUDModBase
                 
                 //this food is better if we overeat less, or the overeat is the same but it heals more hunger
                 if (bestFoodMatchOvereat > overeat ||
-                        ((overeat == bestFoodMatchOvereat) && (heal > bestFoodMatchHeal)))
+                        ((overeat == bestFoodMatchOvereat) && (eat > bestFoodMatchEat)))
                 {
                     bestFoodMatchIndex = i;
                     bestFoodMatchOvereat = overeat;
-                    bestFoodMatchHeal = heal;
+                    bestFoodMatchEat = eat;
                     continue;
                 }
             }

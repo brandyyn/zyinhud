@@ -17,11 +17,11 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * Durability Info checks to see if any equipment (items in the hotbar, and armor) is damaged
@@ -184,12 +184,10 @@ public class DurabilityInfo extends ZyinHUDModBase
 		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
 		
 		//render the item with enchant effect
-		//itemRenderer.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.renderEngine, itemStack, x, y);
-		itemRenderer.func_180450_b(itemStack, x, y);	//func_180450_b() is renderItemAndEffectIntoGUI()
-
+		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
+		
 		//render the item's durability bar
-		//itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.renderEngine, itemStack, x, y);
-		itemRenderer.func_175030_a(mc.fontRendererObj, itemStack, x, y);	//func_175030_a() is renderItemOverlayIntoGUI()
+		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
 		
 		GL11.glDisable(GL11.GL_LIGHTING);	//the itemRenderer.renderItem() method enables lighting
 		GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
@@ -197,8 +195,8 @@ public class DurabilityInfo extends ZyinHUDModBase
 		//render the number of durability it has left
 		if(itemStack.getItemDamage() != 0)
 		{
-			boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
-			mc.fontRendererObj.setUnicodeFlag(true);
+			boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
+			mc.fontRenderer.setUnicodeFlag(true);
 			
 			String damageString;
 			int itemDamage = itemStack.getItemDamage();
@@ -225,14 +223,14 @@ public class DurabilityInfo extends ZyinHUDModBase
 				
 			}
 			
-			int damageX = x + toolX - mc.fontRendererObj.getStringWidth(damageString);
-			int damageY = y + toolY - mc.fontRendererObj.FONT_HEIGHT - 1;
+			int damageX = x + toolX - mc.fontRenderer.getStringWidth(damageString);
+			int damageY = y + toolY - mc.fontRenderer.FONT_HEIGHT - 1;
 			int damageColor = 0xffffff;
 			if(UseColoredNumbers)
 				damageColor = GetDamageColor(itemStack.getItemDamage(), itemStack.getMaxDamage());
 			
-			mc.fontRendererObj.func_175063_a(damageString, damageX, damageY, damageColor);
-			mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
+			mc.fontRenderer.drawStringWithShadow(damageString, damageX, damageY, damageColor);
+			mc.fontRenderer.setUnicodeFlag(unicodeFlag);
 		}
 	}
 	
@@ -259,7 +257,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 		
 		GL11.glColor4f(255f, 255f, 255f, 255f);	//fixes transparency issue when a InfoLine Notification is displayed
 		
-		ZyinHUDRenderer.RenderCustomTexture(x, y, 
+		ZyinHUDUtil.DrawTexture(x, y, 
 				armorDurabilityIconU, armorDurabilityIconV, 
 				(int)(armorDurabilityIconX/armorDurabilityScaler), (int)(armorDurabilityIconY/armorDurabilityScaler), 
 				durabilityIconsResourceLocation, armorDurabilityScaler);

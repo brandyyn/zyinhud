@@ -1,7 +1,5 @@
 package com.zyin.zyinhud.gui;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,9 +32,8 @@ public class GuiOptionsOverride extends GuiOptions
     
     /**
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
-     * @throws IOException 
      */
-    protected void actionPerformed(GuiButton par1GuiButton) throws IOException
+    protected void actionPerformed(GuiButton par1GuiButton)
     {
     	super.actionPerformed(par1GuiButton);
     	

@@ -1,7 +1,6 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.util.EnumChatFormatting;
-
+import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 public class Fps extends ZyinHUDModBase
@@ -26,7 +25,7 @@ public class Fps extends ZyinHUDModBase
         if (Fps.Enabled)
         {
             currentFps = mc.debug.substring(0, mc.debug.indexOf(' '));
-        	return EnumChatFormatting.WHITE + currentFps + " " + Localization.get("fps.infoline");
+        	return FontCodes.WHITE + currentFps + " " + Localization.get("fps.infoline");
         }
         else
         {

@@ -14,14 +14,18 @@ public class ZyinHUDSound
 	 */
 	public static void PlaySound(String name)
 	{
-		mc.getSoundHandler().playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("zyinhud:" + name), 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation("zyinhud:" + name)));
 	}
 	
 	/**
-	 * Plays the sound that a GuiButton makes
+	 * Playes the sound that a GuiButton makes
 	 */
 	public static void PlayButtonPress()
 	{
-		mc.getSoundHandler().playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("gui.button.press"), 1.0F));
+		//func_147673_a plays at 100% volume
+		//mc.getSoundHandler().playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation("gui.button.press")));
+		
+		//func_147674_a plays at 25% volume
+		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1f));
 	}
 }

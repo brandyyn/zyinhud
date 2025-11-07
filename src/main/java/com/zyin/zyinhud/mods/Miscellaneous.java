@@ -1,26 +1,15 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiOptions;
-import net.minecraft.client.gui.GuiRepair;
 import net.minecraft.client.gui.inventory.GuiEditSign;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.AnvilUpdateEvent;
 
-import com.zyin.zyinhud.gui.GuiOptionsOverride;
-import com.zyin.zyinhud.gui.GuiRepairOverride;
 import com.zyin.zyinhud.util.InventoryUtil;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 /**
  * The Miscellaneous mod has other functionality not relating to anything specific.
@@ -32,7 +21,6 @@ public class Miscellaneous extends ZyinHUDModBase
 	public static boolean UseEnhancedMiddleClick;
 	public static boolean UseQuickPlaceSign;
 	public static boolean UseUnlimitedSprinting;
-	public static boolean ShowAnvilRepairs;
 	
 
     @SubscribeEvent
@@ -42,12 +30,8 @@ public class Miscellaneous extends ZyinHUDModBase
     	{
     		event.setCanceled(true);
     	}
-    	if(ShowAnvilRepairs && event.gui instanceof GuiRepair)
-    	{
-    		event.gui = new GuiRepairOverride(mc.thePlayer.inventory, mc.theWorld);
-    	}
 	}
-    
+	
 	/**
 	 * When the player middle clicks
 	 */
@@ -66,9 +50,7 @@ public class Miscellaneous extends ZyinHUDModBase
 	{
         if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
-            Block block = ZyinHUDUtil.GetMouseOveredBlock();
-            System.out.println(block);
-            
+            Block block = mc.theWorld.getBlock(mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ);
             Item blockItem = Item.getItemFromBlock(block);
             
     		//first, scan the hotbar to see if the mouseovered block already exists on the hotbar
@@ -142,14 +124,5 @@ public class Miscellaneous extends ZyinHUDModBase
     public static boolean ToggleUseUnlimitedSprinting()
     {
     	return UseUnlimitedSprinting = !UseUnlimitedSprinting;
-    }
-    
-    /**
-     * Toggles showing anvil repairs
-     * @return 
-     */
-    public static boolean ToggleShowAnvilRepairs()
-    {
-    	return ShowAnvilRepairs = !ShowAnvilRepairs;
     }
 }
