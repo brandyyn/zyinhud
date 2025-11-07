@@ -213,15 +213,10 @@ public class ZyinHUDConfig
         
         if(loadSettings)
         	Coordinates.Mode = Coordinates.Modes.GetMode(mode);
+        	//Coordinates.Mode = Coordinates.Modes.XZY;
+        	//Coordinates.Mode = null;
         else
         	p.set(Coordinates.Mode.name());
-        
-        p = config.get(CATEGORY_COORDINATES, "ShowChunkCoordinates", false);
-        p.comment = "Shows how far into a 16x16 chunk you are in.";
-        if(loadSettings)
-        	Coordinates.ShowChunkCoordinates = p.getBoolean(false);
-        else
-        	p.set(Coordinates.ShowChunkCoordinates);
         
         
         //CATEGORY_COMPASS
@@ -306,17 +301,17 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.GetVerticalLocation());
         
-        p = config.get(CATEGORY_DURABILITYINFO, "AutoUnequipArmor", false);
+        p = config.get(CATEGORY_DURABILITYINFO, "AutoUnequipArmor", true);
         p.comment = "Enable/Disable automatically unequipping armor before it breaks.";
         if(loadSettings)
-        	DurabilityInfo.AutoUnequipArmor = p.getBoolean(false);
+        	DurabilityInfo.AutoUnequipArmor = p.getBoolean(true);
         else
         	p.set(DurabilityInfo.AutoUnequipArmor);
         
-        p = config.get(CATEGORY_DURABILITYINFO, "AutoUnequipTools", false);
+        p = config.get(CATEGORY_DURABILITYINFO, "AutoUnequipTools", true);
         p.comment = "Enable/Disable automatically unequipping tools before they breaks.";
         if(loadSettings)
-        	DurabilityInfo.AutoUnequipTools = p.getBoolean(false);
+        	DurabilityInfo.AutoUnequipTools = p.getBoolean(true);
         else
         	p.set(DurabilityInfo.AutoUnequipTools);
         

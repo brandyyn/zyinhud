@@ -72,7 +72,6 @@ public class Coordinates extends ZyinHUDModBase
     
     /** Use colors to show what ores spawn at the elevation level */
     public static boolean UseYCoordinateColors;
-    public static boolean ShowChunkCoordinates;
     
     private static final int oreBoundaries[] =
     {
@@ -116,28 +115,13 @@ public class Coordinates extends ZyinHUDModBase
                 }
             }
 
-            String coordinatesString = "";
+            String coordinatesString;
             if(Mode == Modes.XZY)
-            {
-            	coordinatesString += EnumChatFormatting.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + EnumChatFormatting.WHITE + "]";
-
-                if(ShowChunkCoordinates)
-                	coordinatesString += EnumChatFormatting.ITALIC + " [" + EnumChatFormatting.WHITE + (GetXCoordinate() & 15) + ", " + (GetZCoordinate() & 15) + ", " + (GetYCoordinate() & 15) + EnumChatFormatting.ITALIC + "]";
-            }
+            	coordinatesString = EnumChatFormatting.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + EnumChatFormatting.WHITE + "]";
             else if(Mode == Modes.XYZ)
-            {
-            	coordinatesString += EnumChatFormatting.WHITE + "[" + coordX + ", " + yColor + coordY + EnumChatFormatting.WHITE + ", " + coordZ + "]";
-
-	            if(ShowChunkCoordinates)
-	            	coordinatesString += EnumChatFormatting.ITALIC + " [" + EnumChatFormatting.WHITE + (GetXCoordinate() & 15) + ", " + (GetYCoordinate() & 15) + ", " + (GetZCoordinate() & 15) + EnumChatFormatting.ITALIC + "]";
-            }
+            	coordinatesString = EnumChatFormatting.WHITE + "[" + coordX + ", " + yColor + coordY + EnumChatFormatting.WHITE + ", " + coordZ + "]";
             else
-            {
-            	coordinatesString += "[??, ??, ??]";
-            	
-	            if(ShowChunkCoordinates)
-	            	coordinatesString += " [?, ?, ?]";
-            }
+            	coordinatesString = EnumChatFormatting.WHITE + "[??, ??, ??]";
             
             return coordinatesString;
         }
@@ -183,14 +167,5 @@ public class Coordinates extends ZyinHUDModBase
     public static boolean ToggleUseYCoordinateColors()
     {
     	return UseYCoordinateColors = !UseYCoordinateColors;
-    }
-
-    /**
-     * Toggles showing chunk coordinates
-     * @return The state it was changed to
-     */
-    public static boolean ToggleShowChunkCoordinates()
-    {
-    	return ShowChunkCoordinates = !ShowChunkCoordinates;
     }
 }
