@@ -35,4 +35,10 @@ public class CommandFps extends CommandBase
 	{
 		Fps.ToggleEnabled();
 	}
+	
+	@Override
+	public int compareTo(Object t)
+	{
+		return ((CommandBase)t).getCommandName().compareTo(getCommandName());
+	}
 }

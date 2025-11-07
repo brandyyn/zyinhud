@@ -12,6 +12,7 @@ import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 
@@ -233,7 +234,7 @@ public class ItemSelector extends ZyinHUDModBase
 		if (!isCurrentlySelecting)
 			return;
 
-		ScaledResolution scaledresolution = new ScaledResolution(mc);
+		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 		int screenWidth = scaledresolution.getScaledWidth();
 		int screenHeight = scaledresolution.getScaledHeight();
 		int invWidth = 182;
@@ -243,7 +244,7 @@ public class ItemSelector extends ZyinHUDModBase
 
 		String labelText = currentInventory[targetInvSlot].getDisplayName();
 		int labelWidth = mc.fontRendererObj.getStringWidth(labelText);
-		mc.fontRendererObj.drawStringWithShadow(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFAA00);
+		mc.fontRendererObj.func_175063_a(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFAA00);
 
 		GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
 		GL11.glEnable(GL11.GL_DEPTH_TEST); // so the enchanted item effect is rendered properly
@@ -292,12 +293,14 @@ public class ItemSelector extends ZyinHUDModBase
 						GL11.glTranslatef(-(dimX + 8), -(dimZ + 12), 0.0F);
 					}
 					
-					itemRenderer.renderItemAndEffectIntoGUI(itemStack, dimX, dimZ);
+					//itemRenderer.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.getTextureManager(), itemStack, dimX, dimZ);
+					itemRenderer.func_180450_b(itemStack, dimX, dimZ);
 
 					if (anim > 0.0F)
 						GL11.glPopMatrix();
 
-					itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, itemStack, dimX, dimZ, null);
+					//itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.getTextureManager(), itemStack, dimX, dimZ);
+					itemRenderer.func_175030_a(mc.fontRendererObj, itemStack, dimX, dimZ);
 				}
 
 				idx++;

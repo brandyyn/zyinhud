@@ -80,12 +80,12 @@ public class DistanceMeasurer extends ZyinHUDModBase
         {
         	String distanceString = CalculateDistanceString();
         	
-            ScaledResolution res = new ScaledResolution(mc);
+            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
             int distanceStringWidth = mc.fontRendererObj.getStringWidth(distanceString);
             
-            mc.fontRendererObj.drawStringWithShadow(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
+            mc.fontRendererObj.func_175063_a(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
         }
     }
     
@@ -97,7 +97,8 @@ public class DistanceMeasurer extends ZyinHUDModBase
      */
     protected static String CalculateDistanceString()
     {
-    	MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+        //MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+    	MovingObjectPosition objectMouseOver = mc.thePlayer.func_174822_a(300, 1);	//friendly name is probably rayTrace()
     	
         if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
@@ -143,7 +144,7 @@ public class DistanceMeasurer extends ZyinHUDModBase
             }
             else if (Mode == Modes.COORDINATE)
             {
-            	BlockPos pos = objectMouseOver.getBlockPos();
+            	BlockPos pos = objectMouseOver.func_178782_a(); //friendly name is probably getBlockPos()
             	
                 return EnumChatFormatting.GOLD + "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
             }

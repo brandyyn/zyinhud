@@ -88,7 +88,7 @@ public class HUDEntityTrackerHelper {
                 lookDir = new Vec3(lookDir.xCoord * -1, lookDir.yCoord * -1, lookDir.zCoord * -1);
             }
             
-            ScaledResolution res = new ScaledResolution(mc);
+            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
             

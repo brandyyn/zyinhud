@@ -449,7 +449,7 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public static String CalculateMessageForInfoLine()
     {
-        if (Mode == Modes.OFF || !SafeOverlay.Enabled)
+        if (Mode == Modes.OFF)
         {
         	return "";
         }

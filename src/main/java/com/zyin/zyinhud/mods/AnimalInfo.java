@@ -343,7 +343,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static String CalculateMessageForInfoLine()
     {
-        if (Mode == Modes.OFF || !AnimalInfo.Enabled)
+        if (Mode == Modes.OFF)
         {
             return "";
         }

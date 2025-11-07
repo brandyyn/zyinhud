@@ -43,4 +43,10 @@ public class CommandZyinHUDOptions extends CommandBase
 	{
 		mc.displayGuiScreen(new GuiZyinHUDOptions(null));
 	}
+	
+	@Override
+	public int compareTo(Object t)
+	{
+		return ((CommandBase)t).getCommandName().compareTo(getCommandName());
+	}
 }

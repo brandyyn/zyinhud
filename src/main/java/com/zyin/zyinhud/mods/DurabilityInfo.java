@@ -2,6 +2,7 @@ package com.zyin.zyinhud.mods;
 
 import java.util.ArrayList;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,6 +22,7 @@ import org.lwjgl.opengl.GL11;
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
+import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
@@ -237,10 +240,12 @@ public class DurabilityInfo extends ZyinHUDModBase
 		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
 		
 		//render the item with enchant effect
-		itemRenderer.renderItemAndEffectIntoGUI(itemStack, x, y);
+		//itemRenderer.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.renderEngine, itemStack, x, y);
+		itemRenderer.func_180450_b(itemStack, x, y);	//func_180450_b() is renderItemAndEffectIntoGUI()
 
 		//render the item's durability bar
-		itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, itemStack, x, y, null);
+		//itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.renderEngine, itemStack, x, y);
+		itemRenderer.func_175030_a(mc.fontRendererObj, itemStack, x, y);	//func_175030_a() is renderItemOverlayIntoGUI()
 		
 		GL11.glDisable(GL11.GL_LIGHTING);	//the itemRenderer.renderItem() method enables lighting
 		
@@ -293,7 +298,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 					damageStringColor = GetDamageColor(itemStack.getItemDamage(), itemStack.getMaxDamage());
 
 				GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
-				mc.fontRendererObj.drawStringWithShadow(damageStringText, damageStringX, damageStringY, damageStringColor);
+				mc.fontRendererObj.func_175063_a(damageStringText, damageStringX, damageStringY, damageStringColor);
 				mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 			}
