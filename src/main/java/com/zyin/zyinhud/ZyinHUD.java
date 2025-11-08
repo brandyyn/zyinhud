@@ -34,7 +34,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.zyin.zyinhud.command.CommandFps;
 import com.zyin.zyinhud.command.CommandZyinHUDOptions;
-import com.zyin.zyinhud.gui.GuiOptionsOverride;
 import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.util.ModCompatibility;
@@ -116,20 +115,6 @@ public class ZyinHUD
     	event.registerServerCommand(new CommandFps());
     	event.registerServerCommand(new CommandZyinHUDOptions());
     }
-    
-    
-    /**
-     * Event fired before a GUI is opened.
-     * @param event
-     */
-    @SubscribeEvent
-    public void GuiOpenEvent(GuiOpenEvent event)
-    {
-    	//override the default Options screen with our custom one, which contains our custom "Zyin's HUD..." button
-    	if(event.gui instanceof GuiOptions && mc.theWorld != null)
-        {
-    		event.gui = new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings);
-        }
-    }
+
 }
 

@@ -19,16 +19,6 @@ public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
         event.setCanceled(true);
     }
 
-    public static void OnMouseSideButton(MouseEvent event)
-    {
-        if (!mc.inGameHasFocus || !ItemSelector.Enabled || !ItemSelector.UseMouseSideButtons)
-            return;
-
-        int direction = event.button == 3 ? ItemSelector.WHEEL_UP : ItemSelector.WHEEL_DOWN;
-
-        ItemSelector.SideButton(direction);
-        event.setCanceled(true);
-    }
 	
 	public static void Released(KeyInputEvent event)
 	{

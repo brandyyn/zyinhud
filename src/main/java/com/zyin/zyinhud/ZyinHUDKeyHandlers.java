@@ -45,24 +45,14 @@ public class ZyinHUDKeyHandlers
      * <li>[10] Zyin's HUD Options
      * <li>[11] Item Selector
      */
-    public static final KeyBinding[] KEY_BINDINGS = 
+    public static final KeyBinding[] KEY_BINDINGS =
 	{
-		new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("O"), 	   ZyinHUD.MODNAME),	//[0]
-	    new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F1"),    ZyinHUD.MODNAME),	//[1]
-	    new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription,Keyboard.getKeyIndex("K"), 	   ZyinHUD.MODNAME),	//[2]
-	    new KeyBinding(EatingAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("G"), 	   ZyinHUD.MODNAME),	//[3]
-	    new KeyBinding(EnderPearlAidKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("C"), 	   ZyinHUD.MODNAME),	//[4]
-	    new KeyBinding(PlayerLocatorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("P"), 	   ZyinHUD.MODNAME),	//[5]
-	    new KeyBinding(PotionAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("V"), 	   ZyinHUD.MODNAME),	//[6]
-	    new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("X"), 	   ZyinHUD.MODNAME),	//[7]
-	    new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("L"), 	   ZyinHUD.MODNAME),	//[8]
-	    new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F"), 	   ZyinHUD.MODNAME),	//[9]
-	    new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("Z"), 	   ZyinHUD.MODNAME),	//[10]
-	    new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("LMENU"), ZyinHUD.MODNAME),	//[11]
+	    new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("X"), 	   ZyinHUD.MODNAME),	//[0]
+	    new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("TAB"), ZyinHUD.MODNAME),	//[1]
 	};
-    
+
     public static final ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
-	
+
 	public ZyinHUDKeyHandlers()
 	{
 		for(KeyBinding keyBinding : KEY_BINDINGS)
@@ -73,35 +63,13 @@ public class ZyinHUDKeyHandlers
 	public void KeyInputEvent(KeyInputEvent event)
 	{
 		//KeyInputEvent will not fire when looking at a GuiScreen - 1.7.2
-		
+
 		//if 2 KeyBindings have the same hotkey, only 1 will be flagged as "pressed" in getIsKeyPressed(),
 		//which one ends up getting pressed in that scenario is undetermined
-		
-		if(KEY_BINDINGS[0].getIsKeyPressed())
-			AnimalInfoKeyHandler.Pressed(event);
-		//else if(keyBindings[1].getIsKeyPressed())
-			//CoordinatesKeyHandler.Pressed(event);		//THIS WILL NOT FIRE ON A GuiScreen
-		else if(KEY_BINDINGS[2].getIsKeyPressed())
-			DistanceMeasurerKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[3].getIsKeyPressed())
-			EatingAidKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[4].getIsKeyPressed())
-			EnderPearlAidKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[5].getIsKeyPressed())
-			PlayerLocatorKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[6].getIsKeyPressed())
-			PotionAidKeyHandler.Pressed(event);
-		//else if(keyBindings[7].getIsKeyPressed())
-			//QuickDepositKeyHandler.Pressed(event);	//THIS WILL NOT FIRE ON A GuiScreen
-		else if(KEY_BINDINGS[8].getIsKeyPressed())
-			SafeOverlayKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[9].getIsKeyPressed())
-			WeaponSwapperKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[10].getIsKeyPressed())
-			ZyinHUDOptionsKeyHandler.Pressed(event);
-		else if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
+
+		if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[1].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
 			ItemSelectorKeyHandler.Released(event);
-		
+
 	}
 
     @SubscribeEvent
@@ -115,25 +83,17 @@ public class ZyinHUDKeyHandlers
     	//event.dwheel =    0 = mouse moved
     	//event.dwheel =  120 = mouse wheel up
     	//event.dwheel = -120 = mouse wheel down
-    	
+
     	if(event.dx != 0 || event.dy != 0)	//mouse movement event
     		return;
-    	
+
     	//Mouse wheel scroll
         if(event.dwheel != 0)
         {
-        	if(KEY_BINDINGS[11].getIsKeyPressed())
+        	if(KEY_BINDINGS[1].getIsKeyPressed())
         		ItemSelectorKeyHandler.OnMouseWheelScroll(event);
         }
 
-        //Mouse side buttons
-        if(event.button == 3 || event.button == 4)
-        {
-	        if(event.buttonstate)
-	        {
-	            ItemSelectorKeyHandler.OnMouseSideButton(event);
-	        }
-	    }
 
         //Middle click
         if(event.button == 2)
@@ -144,26 +104,23 @@ public class ZyinHUDKeyHandlers
         	}
         }
     }
-	
-	
+
+
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
     {
     	//This tick handler is to overcome the GuiScreen + KeyInputEvent limitation
     	//for Coordinates and QuickDeposit
-    	
-		if (Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())
-	    	CoordinatesKeyHandler.ClientTickEvent(event);
-		else if(Keyboard.getEventKey() == KEY_BINDINGS[7].getKeyCode())
+		if(Keyboard.getEventKey() == KEY_BINDINGS[0].getKeyCode())
 			QuickDepositKeyHandler.ClientTickEvent(event);
-		
+
 		//since this method is in the ClientTickEvent, it'll overcome the GuiScreen limitation of not handling mouse clicks
 		FireUseBlockEvents();
     }
 
 
     private static boolean useBlockButtonPreviouslyDown = false;
-    
+
     private static void FireUseBlockEvents()
     {
     	//.keyBindUseItem		isButtonDown()
@@ -173,9 +130,9 @@ public class ZyinHUDKeyHandlers
     	//middle click = -98	2
     	//right click = -99		1
     	//left click = -100		0
-    	
+
     	boolean useBlockButtonDown;
-    	
+
     	if(mc.gameSettings.keyBindUseItem.getKeyCode() < 0)	//the Use Block hotkey is bound to the mouse
     	{
             useBlockButtonDown = Mouse.isButtonDown(100 + mc.gameSettings.keyBindUseItem.getKeyCode());
@@ -184,20 +141,18 @@ public class ZyinHUDKeyHandlers
     	{
             useBlockButtonDown = Keyboard.isKeyDown(mc.gameSettings.keyBindUseItem.getKeyCode());
     	}
-    	
+
     	if(useBlockButtonDown == true & useBlockButtonPreviouslyDown == false)
     		OnUseBlockPressed();
     	else if(useBlockButtonDown == false & useBlockButtonPreviouslyDown == true)
     		OnUseBlockReleased();
-    	
+
     	useBlockButtonPreviouslyDown = useBlockButtonDown;
     }
     private static void OnUseBlockPressed()
     {
-    	TorchAid.instance.Pressed();
     }
     private static void OnUseBlockReleased()
     {
-    	TorchAid.instance.Released();
     }
 }
