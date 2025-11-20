@@ -39,7 +39,7 @@ public class QuickDepositKeyHandler implements ZyinHUDKeyHandlerBase
     {
     	if(mc.currentScreen instanceof GuiContainer)
     	{
-    		if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[7].getKeyCode())
+    		if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[0].getKeyCode())
     		{
     			if(Keyboard.getEventKeyState())
     			{

@@ -86,9 +86,9 @@ public class ItemSelector extends ZyinHUDModBase
 	public static final int WHEEL_DOWN = 1;
 
 	protected static int timeout;
-	public static final int defaultTimeout = 600;
-	public static final int minTimeout = 600;
-	public static final int maxTimeout = 600;
+	public static final int defaultTimeout = 900;
+	public static final int minTimeout = 900;
+	public static final int maxTimeout = 900;
 
 	private static int[] slotMemory = new int[InventoryPlayer.getHotbarSize()];
 	private static int ticksToShow = 0;
