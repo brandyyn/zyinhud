@@ -369,16 +369,26 @@ public class InventoryUtil
 			    	
 			    	//keep putting into next available slot until we deposit all the items in this stack
 				    handStack = mc.thePlayer.inventory.getItemStack();
+				    int __depositGuard0 = 0;
 				    while(handStack != null)
 				    {
+				    	if(__depositGuard0++ >= 128)
+				    		break;
+
 				    	emptyIndex = GetFirstEmptyIndexInContainer(handStack);
 				    	if(emptyIndex < 0)
 				    		return false;
-				    	
+
 				    	LeftClickContainerSlot(emptyIndex);
 					    handStack = mc.thePlayer.inventory.getItemStack();
 				    }
-		    	}
+				    if(handStack != null && __depositGuard0 >= 128)
+				    {
+				    	int __invIndex = GetFirstEmptyIndexInContainerInventory();
+				    	if(__invIndex >= 0)
+				    		LeftClickContainerSlot(__invIndex);
+				    }
+			}
 		    }
 	    }
 	    
@@ -437,6 +447,10 @@ public class InventoryUtil
 	    }
 	    return true;
 	}
+
+
+
+
 	
 	/**
 	 * Moves an item from the players inventory to a chest or horse inventory. It assumes that no ItemStack is being held on the cursor.
@@ -464,20 +478,10 @@ public class InventoryUtil
 	    System.out.println("srcIndex:"+srcIndex);
 	    System.out.println("destIndex:"+destIndex);
 
-		if(numContainerSlots == 53-numInventorySlots && (srcIndex < 18 || srcIndex > 53))
-			return false;
-		if(numContainerSlots == 63-numInventorySlots && (srcIndex < 28 || srcIndex > 63))
-			return false;
-		if(numContainerSlots == 90-numInventorySlots && (srcIndex < 55 || srcIndex > 90))
+		if (srcIndex < numContainerSlots || srcIndex >= numDisplayedSlots)
 			return false;
 		
-		if(destIndex < 0)
-			return false;
-		if(numContainerSlots == 53-numInventorySlots && (destIndex < 0 || destIndex > 17))
-			return false;
-		if(numContainerSlots == 63-numInventorySlots && (destIndex < 0 || destIndex > 27))
-			return false;
-		if(numContainerSlots == 90-numInventorySlots && (destIndex < 0 || destIndex > 54))
+		if (destIndex < 0 || destIndex >= numContainerSlots)
 			return false;
 	    
 	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
@@ -533,8 +537,9 @@ public class InventoryUtil
 				    
 				    //keep putting into next available slot until we deposit all the items in this stack
 				    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-				    while(handStack != null)
-				    {
+				    int __depositGuard1 = 0;
+			while(handStack != null && __depositGuard1++ < 128)
+			{
 				    	emptyIndex = GetFirstEmptyIndexInContainer(destStack);
 				    	if(emptyIndex < 0)
 				    	{
@@ -564,8 +569,9 @@ public class InventoryUtil
 
 				    //keep putting into next available slot until we deposit all the items in this stack
 				    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-				    while(handStack != null)
-				    {
+				    int __depositGuard2 = 0;
+			while(handStack != null && __depositGuard2++ < 128)
+			{
 				    	emptyIndex = GetFirstEmptyIndexInContainer(destStack);
 				    	if(emptyIndex < 0)
 				    	{
@@ -1050,7 +1056,30 @@ public class InventoryUtil
 	 * Gets the index in the chest's player's inventory (bottom section of gui) of the first empty slot.
 	 * @return 27,54-63,90, -1 if no empty spot
 	 */
-	private static int GetFirstEmptyIndexInContainerInventory()
+	private 
+
+	/**
+	 * Finds the index in the open container's slot list that corresponds to a given
+	 * player inventory slot (0-35).
+	 * @param invIndex player inventory index 0-35
+	 * @return container slot index, or -1 if not found
+	 */
+	static int GetContainerIndexForPlayerInventorySlot(int invIndex)
+	{
+		List containerSlots = mc.thePlayer.openContainer.inventorySlots;
+		int numDisplayedSlots = containerSlots.size();
+		for (int i = 0; i < numDisplayedSlots; i++)
+		{
+			Slot slot = (Slot)containerSlots.get(i);
+			if (slot.inventory == mc.thePlayer.inventory && slot.getSlotIndex() == invIndex)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+static int GetFirstEmptyIndexInContainerInventory()
 	{
 		List containerSlots = mc.thePlayer.openContainer.inventorySlots;
 		
